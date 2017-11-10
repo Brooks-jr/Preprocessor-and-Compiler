@@ -8,6 +8,7 @@ var plumber = require('gulp-plumber');
 var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
 var babel = require('gulp-babel');
+var del = require('del');
 
 // HANDLEBARS
 var handlebars = require('gulp-handlebars');
@@ -121,7 +122,13 @@ gulp.task('templates', function() {
     .pipe(livereload());
 });
 
-gulp.task('default', ['images', 'templates', 'styles', 'scripts'], function() {
+gulp.task('clean', function() {
+    return del.sync([
+        dist_path
+    ]);
+});
+
+gulp.task('default', ['clean', 'images', 'templates', 'styles', 'scripts'], function() {
     console.log('starting default task');
 });
 
