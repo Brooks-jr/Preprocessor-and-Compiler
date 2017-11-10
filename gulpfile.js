@@ -16,11 +16,17 @@ var declare = require('gulp-declare');
 var wrap = require('gulp-wrap');
 // ==========================================
 
+// IMAGE COMPRESSION
+var imagemin = require('gulp-imagemin');
+var imageminPngquant = require('imagemin-pngquant');
+var imageminJpegRecompress = require('imagemin-jpeg-recompress');
+
 // FILE PATHS
 var scripts_path = 'public/scripts/**/*.js';
 var css_path = 'public/css/**/*.css';
 var dist_path = 'public/dist';
 var templates_path = 'templates/**/*.hbs';
+var images_path = 'public/images/**/*.{png,jpeg,jpg,svg,gif}';
 // ==========================================
 
 // STYLES
@@ -87,7 +93,16 @@ gulp.task('scripts', function () {
 
 // IMAGES
 gulp.task('images', function () {
-    console.log('starting images task');
+    return gulp.src(images_path)
+    .pipe(imagemin([
+        imagemin.gifsicle(),
+        imagemin.jpegtran(),
+        imagemin.optipng(),
+        imagemin.svgo(),
+        imageminPngquant(),
+        imageminJpegRecompress()
+    ]))
+    .pipe(gulp.dest(dist_path + '/images'));
 });
 // ==========================================
 
@@ -106,11 +121,11 @@ gulp.task('templates', function() {
     .pipe(livereload());
 });
 
-gulp.task('default', function() {
+gulp.task('default', ['images', 'templates', 'styles', 'scripts'], function() {
     console.log('starting default task');
 });
 
-gulp.task('watch', function() {
+gulp.task('watch', ['default'], function() {
     console.log('starting watch task');
     require('./server.js');
     livereload.listen();
