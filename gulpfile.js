@@ -9,10 +9,18 @@ var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
 var babel = require('gulp-babel');
 
+// HANDLEBARS
+var handlebars = require('gulp-handlebars');
+var handlebarsLib = require('handlebars');
+var declare = require('gulp-declare');
+var wrap = require('gulp-wrap');
+// ==========================================
+
 // FILE PATHS
 var scripts_path = 'public/scripts/**/*.js';
 var css_path = 'public/css/**/*.css';
 var dist_path = 'public/dist';
+var templates_path = 'templates/**/*.hbs';
 // ==========================================
 
 // STYLES
@@ -83,6 +91,21 @@ gulp.task('images', function () {
 });
 // ==========================================
 
+gulp.task('templates', function() {
+    return gulp.src(templates_path)
+    .pipe(handlebars({
+        handlebars: handlebarsLib
+    }))
+    .pipe(wrap('Handlebars.template(<%= contents %>)'))
+    .pipe(declare({
+        namespace: 'templates',
+        noRedeclare: true
+    }))
+    .pipe(concat('templates.js'))
+    .pipe(gulp.dest(dist_path))
+    .pipe(livereload());
+});
+
 gulp.task('default', function() {
     console.log('starting default task');
 });
@@ -94,4 +117,5 @@ gulp.task('watch', function() {
     gulp.watch(scripts_path, ['scripts']);
     // gulp.watch(css_path, ['styles']);
     gulp.watch('public/scss/**/*.scss', ['styles']);
+    gulp.watch(templates_path, ['templates']);
 });
