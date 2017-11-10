@@ -4,14 +4,13 @@ class Person {
     }
     hello() {
         if (typeof this.name === 'string') {
-            return 'hello, i am ' + this.name + '!'
+            return 'Hello, I am ' + this.name + '!'
         }else{
             return "Hello";
         }
     }
 }
 
-var person = new Person('Thor');
-var name = 'Korg';
+var person = new Person('Korg');
 
 document.write(person.hello());
